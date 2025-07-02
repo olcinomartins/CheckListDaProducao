@@ -9,5 +9,3 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
 });
-
-node -v
