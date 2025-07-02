@@ -1,26 +1,35 @@
 # Checklist da Produção - Onda Dura
 
-Um checklist interativo para equipe de produção de eventos da igreja, desenvolvido com React e TypeScript.
+Um checklist interativo para equipe de produção de eventos da igreja, otimizado para GitHub Pages.
 
 ## 🎯 Funcionalidades
 
 - ✅ Seleção múltipla de cargos
 - ✅ Checklist organizado por momentos do evento
-- ✅ Animação visual ao completar tarefas
+- ✅ Animação visual ao completar tarefas (verde e riscado)
 - ✅ Separação entre atividades pendentes e realizadas
 - ✅ Campo de observações por momento
 - ✅ Cópia automática das observações
 - ✅ Tema escuro otimizado para ambientes com pouca luz
 - ✅ Design responsivo para mobile
+- ✅ Área clicável expandida para facilitar uso
 
-## 🔧 Como Atualizar as Atividades
+## 🚀 Acesso
 
-### Método Simples (Recomendado)
-As atividades são definidas no arquivo `src/data/activities.json`. Para atualizar:
+O checklist está disponível em: **[https://seuusuario.github.io/ChecklistDaProducao/](https://seuusuario.github.io/ChecklistDaProducao/)**
 
-1. Abra o arquivo `src/data/activities.json`
-2. Edite as atividades seguindo a estrutura existente:
+## 🔧 Como Atualizar as Atividades (Semanalmente)
 
+### Método Simples
+As atividades são definidas no arquivo `docs/atividades.json`. Para atualizar:
+
+1. Acesse o repositório no GitHub
+2. Navegue até `docs/atividades.json`
+3. Clique no ícone de edição (✏️)
+4. Edite as atividades seguindo a estrutura existente
+5. Faça commit das mudanças
+
+### Estrutura do JSON
 ```json
 {
   "CARGO": {
@@ -32,8 +41,7 @@ As atividades são definidas no arquivo `src/data/activities.json`. Para atualiz
 }
 ```
 
-### Estrutura dos Momentos
-Os momentos seguem esta ordem:
+### Momentos Disponíveis
 - `Pré-culto`
 - `Louvor`
 - `Oração`
@@ -58,25 +66,15 @@ Os momentos seguem esta ordem:
 }
 ```
 
-## 🚀 Desenvolvimento
+## 📱 Como Usar
 
-```bash
-# Instalar dependências
-npm install
-
-# Executar em desenvolvimento
-npm run dev
-
-# Build para produção
-npm run build
-```
-
-## 📱 Uso
-
-1. Selecione seus cargos na seção superior
-2. Marque as atividades conforme forem sendo realizadas
-3. Adicione observações em cada momento
-4. Use o botão "Copiar Observações" para exportar suas anotações
+1. **Acesse o link do GitHub Pages**
+2. **Selecione seus cargos** na seção superior
+3. **Marque as atividades** conforme forem sendo realizadas
+   - Clique em qualquer lugar do card da atividade
+   - Veja a animação verde antes da atividade ser movida para "Realizadas"
+4. **Adicione observações** em cada momento
+5. **Use o botão "Copiar Observações"** para exportar suas anotações
 
 ## 🎨 Características do Design
 
@@ -86,10 +84,41 @@ npm run build
 - **Responsivo**: Funciona perfeitamente em dispositivos móveis
 - **Acessível**: Foco em usabilidade e contraste adequado
 
+## ⚙️ Configuração do GitHub Pages
+
+1. Vá em **Settings** do repositório
+2. Na seção **Pages**:
+   - Source: **Deploy from a branch**
+   - Branch: **main**
+   - Folder: **/ (root)** ou **/docs**
+3. Salve as configurações
+4. O site estará disponível em alguns minutos
+
+## 📁 Estrutura de Arquivos
+
+```
+ChecklistDaProducao/
+├── docs/
+│   ├── index.html          # Aplicação principal
+│   └── atividades.json     # Dados das atividades
+└── README.md              # Documentação
+```
+
+## 🔄 Atualizações Automáticas
+
+- Qualquer mudança no arquivo `docs/atividades.json` será refletida automaticamente no site
+- Não é necessário recarregar a página, apenas atualizar o navegador
+- As mudanças aparecem em poucos minutos após o commit
+
 ## 📝 Tecnologias
 
-- React 18
-- TypeScript
-- Tailwind CSS
-- Lucide React (ícones)
-- Vite (build tool)
+- HTML5 puro
+- CSS3 com animações
+- JavaScript vanilla
+- GitHub Pages
+- Design responsivo
+- Fontes Google (Inter)
+
+---
+
+**Desenvolvido para a equipe de produção Onda Dura** 🎵

@@ -1,17 +1,981 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Checklist interativo para equipe de produção de eventos da igreja" />
-    <title>Checklist da Produção - Onda Dura</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checklist da Produção - Onda Dura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset e Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Banner de Cultura */
+    .culture-banner {
+      position: sticky;
+      top: 0;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-bottom: 1px solid #475569;
+      padding: 1rem;
+      z-index: 50;
+      transition: opacity 0.3s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .culture-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .culture-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      color: #f87171;
+    }
+
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .culture-item {
+      color: #cbd5e1;
+    }
+
+    /* Container Principal */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .header p {
+      font-size: 1.125rem;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Seletor de Cargos */
+    .role-selector {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .role-selector h2 {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 1rem;
+    }
+
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .role-option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      border: 2px solid #475569;
+      border-radius: 0.5rem;
+      background: #334155;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .role-option:hover {
+      border-color: #64748b;
+      background: #475569;
+    }
+
+    .role-option.selected {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+    }
+
+    .role-option input {
+      display: none;
+    }
+
+    .selected-info {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid #3b82f6;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      color: #93c5fd;
+    }
+
+    /* Seções de Checklist */
+    .checklist-section {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .section-header {
+      background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 0.5rem;
+      background: #64748b;
+      border-radius: 0.25rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #10b981;
+      transition: width 0.3s ease;
+    }
+
+    .section-content {
+      padding: 1.5rem;
+    }
+
+    /* Grupos de Atividades */
+    .activity-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .group-title {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: #e2e8f0;
+      border-bottom: 1px solid #475569;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .activities-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* Items de Atividade */
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem;
+      border: 1px solid #475569;
+      border-radius: 0.5rem;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .activity-item:hover {
+      border-color: #64748b;
+      background: #475569;
+    }
+
+    .activity-item.completed {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+    }
+
+    .activity-item.completing {
+      animation: completeAnimation 0.6s ease-in-out;
+    }
+
+    .activity-checkbox {
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid #64748b;
+      border-radius: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+      transition: all 0.2s ease;
+    }
+
+    .activity-item.completed .activity-checkbox {
+      background: #10b981;
+      border-color: #10b981;
+    }
+
+    .activity-text {
+      flex: 1;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .activity-item.completed .activity-text {
+      text-decoration: line-through;
+      opacity: 0.75;
+    }
+
+    /* Seções Colapsáveis */
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: #10b981;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      transition: color 0.2s ease;
+    }
+
+    .collapsible-header:hover {
+      color: #6ee7b7;
+    }
+
+    .collapsible-content {
+      padding-left: 1rem;
+      border-left: 2px solid #10b981;
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Campo de Observações */
+    .observations {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #475569;
+    }
+
+    .observations label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 0.5rem;
+    }
+
+    .observations textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 0.75rem;
+      border: 1px solid #475569;
+      border-radius: 0.5rem;
+      background: #334155;
+      color: #e2e8f0;
+      font-size: 0.875rem;
+      resize: vertical;
+      transition: border-color 0.2s ease;
+    }
+
+    .observations textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .observations textarea::placeholder {
+      color: #64748b;
+    }
+
+    /* Botão de Copiar */
+    .copy-button {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+      z-index: 40;
+    }
+
+    .copy-button:hover {
+      background: #2563eb;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .copy-button.copied {
+      background: #10b981;
+    }
+
+    /* Estado Vazio */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .empty-state-card {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .empty-state h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: #64748b;
+    }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 50vh;
+      gap: 1rem;
+    }
+
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      border: 2px solid #475569;
+      border-top: 2px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Animações */
+    @keyframes completeAnimation {
+      0% {
+        background: #334155;
+        transform: scale(1);
+      }
+      50% {
+        background: #10b981;
+        transform: scale(1.02);
+      }
+      100% {
+        background: rgba(16, 185, 129, 0.2);
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .culture-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .roles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .copy-button {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.75rem;
+      }
+
+      .copy-button span {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .roles-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        padding: 1rem;
+      }
+
+      .section-content {
+        padding: 1rem;
+      }
+    }
+
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <!-- Banner de Cultura -->
+  <div class="culture-banner" id="cultureBanner">
+    <div class="culture-content">
+      <div class="culture-title">
+        <span>❤️</span>
+        <span>Nossa Cultura</span>
+      </div>
+      <div class="culture-grid">
+        <div>
+          <div class="culture-item">• Excelência em tudo que fazemos</div>
+          <div class="culture-item">• Não existe função menos importante</div>
+          <div class="culture-item">• Privilégio de servir com responsabilidade</div>
+        </div>
+        <div>
+          <div class="culture-item">• Proximidade com quem leva a Palavra</div>
+          <div class="culture-item">• Busca constante por melhoria</div>
+          <div class="culture-item">• Feedback como ferramenta de crescimento</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>
+        <span>✅</span>
+        Checklist da Produção
+      </h1>
+      <p>Somos uma equipe de excelência, pontuais e focados.</p>
+    </div>
+
+    <!-- Seletor de Cargos -->
+    <div class="role-selector">
+      <h2>
+        <span>👥</span>
+        Selecione seus Cargos
+      </h2>
+      <div class="roles-grid" id="rolesGrid">
+        <!-- Cargos serão inseridos aqui via JavaScript -->
+      </div>
+      <div id="selectedInfo" class="selected-info" style="display: none;">
+        <!-- Informações dos cargos selecionados -->
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Carregando checklist...</p>
+    </div>
+
+    <!-- Estado Vazio -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-state-card">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+        <h3>Selecione seus cargos</h3>
+        <p>Escolha um ou mais cargos acima para visualizar os checklists correspondentes.</p>
+      </div>
+    </div>
+
+    <!-- Checklists -->
+    <div id="checklists">
+      <!-- Seções de checklist serão inseridas aqui via JavaScript -->
+    </div>
+
+    <!-- Botão de Copiar -->
+    <button id="copyButton" class="copy-button" style="display: none;">
+      <span>📋</span>
+      <span>Copiar Observações</span>
+    </button>
+  </div>
+
+  <script>
+    // Estado da aplicação
+    let activities = {};
+    let selectedRoles = [];
+    let checkedItems = new Set();
+    let observations = {};
+    let animatingItems = new Set();
+
+    // Elementos DOM
+    const loading = document.getElementById('loading');
+    const emptyState = document.getElementById('emptyState');
+    const rolesGrid = document.getElementById('rolesGrid');
+    const selectedInfo = document.getElementById('selectedInfo');
+    const checklists = document.getElementById('checklists');
+    const copyButton = document.getElementById('copyButton');
+    const cultureBanner = document.getElementById('cultureBanner');
+
+    // Carregar atividades
+    async function loadActivities() {
+      try {
+        const response = await fetch('./atividades.json');
+        if (!response.ok) throw new Error('Erro ao carregar atividades');
+        activities = await response.json();
+        initializeApp();
+      } catch (error) {
+        console.error('Erro:', error);
+        loading.innerHTML = '<div style="color: #ef4444; text-align: center;"><h3>Erro</h3><p>Não foi possível carregar as atividades.</p></div>';
+      }
+    }
+
+    // Inicializar aplicação
+    function initializeApp() {
+      loading.style.display = 'none';
+      renderRoleSelector();
+      updateDisplay();
+      setupEventListeners();
+    }
+
+    // Renderizar seletor de cargos
+    function renderRoleSelector() {
+      const availableRoles = Object.keys(activities);
+      rolesGrid.innerHTML = availableRoles.map(role => `
+        <label class="role-option" data-role="${role}">
+          <input type="checkbox" value="${role}">
+          <span>${role}</span>
+        </label>
+      `).join('');
+
+      // Adicionar event listeners
+      rolesGrid.addEventListener('change', handleRoleChange);
+    }
+
+    // Manipular mudança de cargo
+    function handleRoleChange(event) {
+      if (event.target.type === 'checkbox') {
+        const role = event.target.value;
+        const label = event.target.closest('.role-option');
+        
+        if (event.target.checked) {
+          selectedRoles.push(role);
+          label.classList.add('selected');
+        } else {
+          selectedRoles = selectedRoles.filter(r => r !== role);
+          label.classList.remove('selected');
+        }
+        
+        updateSelectedInfo();
+        updateDisplay();
+      }
+    }
+
+    // Atualizar informações dos cargos selecionados
+    function updateSelectedInfo() {
+      if (selectedRoles.length > 0) {
+        selectedInfo.style.display = 'block';
+        selectedInfo.innerHTML = `
+          <strong>${selectedRoles.length}</strong> cargo(s) selecionado(s): ${selectedRoles.join(', ')}
+        `;
+      } else {
+        selectedInfo.style.display = 'none';
+      }
+    }
+
+    // Atualizar display principal
+    function updateDisplay() {
+      if (selectedRoles.length === 0) {
+        emptyState.style.display = 'block';
+        checklists.innerHTML = '';
+        copyButton.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      renderChecklists();
+      updateCopyButton();
+    }
+
+    // Renderizar checklists
+    function renderChecklists() {
+      const moments = getMoments();
+      checklists.innerHTML = moments.map(moment => renderMomentSection(moment)).join('');
+      
+      // Adicionar event listeners para observações
+      document.querySelectorAll('.observation-textarea').forEach(textarea => {
+        textarea.addEventListener('input', handleObservationChange);
+      });
+    }
+
+    // Obter momentos únicos
+    function getMoments() {
+      const momentOrder = [
+        'Pré-culto',
+        'Louvor',
+        'Oração',
+        'Boas vindas / Avisos:',
+        'Generosidade:',
+        'Palavra / Ministração / Apelo:',
+        'Encerramento'
+      ];
+      
+      const momentsSet = new Set();
+      selectedRoles.forEach(role => {
+        if (activities[role]) {
+          Object.keys(activities[role]).forEach(moment => momentsSet.add(moment));
+        }
+      });
+      
+      return momentOrder.filter(moment => momentsSet.has(moment));
+    }
+
+    // Renderizar seção de momento
+    function renderMomentSection(moment) {
+      const items = getItemsForMoment(moment);
+      const pendingItems = items.filter(item => !item.checked);
+      const completedItems = items.filter(item => item.checked);
+      const totalItems = items.length;
+      const progressPercentage = totalItems > 0 ? (completedItems.length / totalItems) * 100 : 0;
+
+      if (totalItems === 0) {
+        return `
+          <div class="checklist-section">
+            <div class="section-header">
+              <div class="section-title">
+                <span>🕐</span>
+                <span>${moment}</span>
+              </div>
+            </div>
+            <div class="section-content">
+              <p style="text-align: center; color: #64748b; padding: 2rem;">
+                Nenhuma atividade para este momento nos cargos selecionados.
+              </p>
+              ${renderObservationField(moment)}
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="checklist-section">
+          <div class="section-header">
+            <div class="section-title">
+              <span>🕐</span>
+              <span>${moment}</span>
+            </div>
+            <div class="progress-info">
+              <span>Progresso</span>
+              <span>${completedItems.length}/${totalItems} concluídos</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+            </div>
+          </div>
+          <div class="section-content">
+            ${pendingItems.length > 0 ? `
+              <div class="activity-group">
+                <div class="group-title">
+                  <span>⭕</span>
+                  Atividades Pendentes (${pendingItems.length})
+                </div>
+                ${renderItemsByRole(pendingItems)}
+              </div>
+            ` : ''}
+            
+            ${completedItems.length > 0 ? `
+              <div class="activity-group">
+                <div class="collapsible-header" onclick="toggleCompleted('${moment}')">
+                  <span>✅</span>
+                  <span>Atividades Realizadas (${completedItems.length})</span>
+                  <span id="chevron-${moment}">▼</span>
+                </div>
+                <div id="completed-${moment}" class="collapsible-content" style="display: none;">
+                  ${renderItemsByRole(completedItems)}
+                </div>
+              </div>
+            ` : ''}
+            
+            ${renderObservationField(moment)}
+          </div>
+        </div>
+      `;
+    }
+
+    // Obter itens para um momento
+    function getItemsForMoment(moment) {
+      const items = [];
+      selectedRoles.forEach(role => {
+        if (activities[role] && activities[role][moment]) {
+          activities[role][moment].forEach((task, index) => {
+            const id = `${role}-${moment}-${index}`;
+            items.push({
+              id,
+              text: task,
+              checked: checkedItems.has(id),
+              role,
+              moment
+            });
+          });
+        }
+      });
+      return items;
+    }
+
+    // Renderizar itens agrupados por cargo
+    function renderItemsByRole(items) {
+      const itemsByRole = {};
+      items.forEach(item => {
+        if (!itemsByRole[item.role]) {
+          itemsByRole[item.role] = [];
+        }
+        itemsByRole[item.role].push(item);
+      });
+
+      return Object.entries(itemsByRole).map(([role, roleItems]) => `
+        <div class="activity-group">
+          <div class="group-title">${role}</div>
+          <div class="activities-list">
+            ${roleItems.map(item => `
+              <div class="activity-item ${item.checked ? 'completed' : ''} ${animatingItems.has(item.id) ? 'completing' : ''}" 
+                   onclick="toggleItem('${item.id}')">
+                <div class="activity-checkbox">
+                  ${item.checked ? '✓' : ''}
+                </div>
+                <div class="activity-text">${item.text}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Renderizar campo de observação
+    function renderObservationField(moment) {
+      return `
+        <div class="observations">
+          <label for="obs-${moment}">Observações sobre ${moment}</label>
+          <textarea 
+            id="obs-${moment}" 
+            class="observation-textarea"
+            data-moment="${moment}"
+            placeholder="Adicione suas observações sobre ${moment}..."
+          >${observations[moment] || ''}</textarea>
+        </div>
+      `;
+    }
+
+    // Alternar item
+    function toggleItem(itemId) {
+      const isCurrentlyChecked = checkedItems.has(itemId);
+      
+      if (!isCurrentlyChecked) {
+        // Adicionar animação
+        animatingItems.add(itemId);
+        
+        // Atualizar DOM imediatamente para mostrar animação
+        const itemElement = document.querySelector(`[onclick="toggleItem('${itemId}')"]`);
+        if (itemElement) {
+          itemElement.classList.add('completing');
+        }
+        
+        // Após animação, atualizar estado
+        setTimeout(() => {
+          checkedItems.add(itemId);
+          animatingItems.delete(itemId);
+          updateDisplay();
+        }, 600);
+      } else {
+        // Desmarcar imediatamente
+        checkedItems.delete(itemId);
+        updateDisplay();
+      }
+    }
+
+    // Alternar seção de completados
+    function toggleCompleted(moment) {
+      const content = document.getElementById(`completed-${moment}`);
+      const chevron = document.getElementById(`chevron-${moment}`);
+      
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        chevron.textContent = '▲';
+      } else {
+        content.style.display = 'none';
+        chevron.textContent = '▼';
+      }
+    }
+
+    // Manipular mudança de observação
+    function handleObservationChange(event) {
+      const moment = event.target.dataset.moment;
+      observations[moment] = event.target.value;
+      updateCopyButton();
+    }
+
+    // Atualizar botão de copiar
+    function updateCopyButton() {
+      const hasObservations = Object.values(observations).some(obs => obs && obs.trim() !== '');
+      copyButton.style.display = hasObservations ? 'flex' : 'none';
+    }
+
+    // Copiar observações
+    async function copyObservations() {
+      const filledObservations = Object.entries(observations)
+        .filter(([_, value]) => value && value.trim() !== '')
+        .map(([moment, value]) => {
+          const lines = value.split('\n')
+            .filter(line => line.trim())
+            .map(line => `- ${line.trim()}`)
+            .join('\n');
+          return `${moment}\n${lines}`;
+        })
+        .join('\n\n');
+
+      if (filledObservations.trim() === '') {
+        alert('Nenhuma observação para copiar.');
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(filledObservations);
+        
+        // Feedback visual
+        const originalContent = copyButton.innerHTML;
+        copyButton.innerHTML = '<span>✓</span><span>Copiado!</span>';
+        copyButton.classList.add('copied');
+        
+        setTimeout(() => {
+          copyButton.innerHTML = originalContent;
+          copyButton.classList.remove('copied');
+        }, 2000);
+      } catch (error) {
+        alert('Erro ao copiar observações.');
+      }
+    }
+
+    // Configurar event listeners
+    function setupEventListeners() {
+      copyButton.addEventListener('click', copyObservations);
+      
+      // Fade do banner de cultura
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const fadeStart = 0;
+        const fadeEnd = 150;
+
+        let opacity;
+        if (scrollY < fadeStart) {
+          opacity = 1;
+        } else if (scrollY > fadeEnd) {
+          opacity = 0;
+        } else {
+          opacity = 1 - (scrollY - fadeStart) / (fadeEnd - fadeStart);
+        }
+        
+        cultureBanner.style.opacity = opacity;
+        cultureBanner.style.pointerEvents = opacity < 0.1 ? 'none' : 'auto';
+      });
+    }
+
+    // Tornar funções globais para uso inline
+    window.toggleItem = toggleItem;
+    window.toggleCompleted = toggleCompleted;
+
+    // Inicializar aplicação
+    loadActivities();
+  </script>
+</body>
 </html>
