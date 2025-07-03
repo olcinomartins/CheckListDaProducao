@@ -40,13 +40,12 @@ const CultureBanner: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm leading-relaxed">
           <div className="space-y-1">
             <p>• Excelência em tudo que fazemos</p>
-            <p>• Não existe função menos importante</p>
-            <p>• Privilégio de servir com responsabilidade</p>
-          </div>
-          <div className="space-y-1">
-            <p>• Proximidade com quem leva a Palavra</p>
             <p>• Busca constante por melhoria</p>
             <p>• Feedback como ferramenta de crescimento</p>
+          </div>
+          <div className="space-y-1">
+            <p>• Não existe função menos importante</p>
+            <p>• Privilégio de servir próximo aos comunicadores e precisamos honrar essa responsabilidade</p>
           </div>
         </div>
       </div>

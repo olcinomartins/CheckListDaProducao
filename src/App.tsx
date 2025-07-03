@@ -54,13 +54,15 @@ function App() {
   // Get unique moments in order
   const moments = useMemo(() => {
     const momentOrder = [
+      'Reunião de equipe (inicial)',
       'Pré-culto',
       'Louvor',
       'Oração',
       'Boas vindas / Avisos:',
       'Generosidade:',
       'Palavra / Ministração / Apelo:',
-      'Encerramento'
+      'Encerramento',
+      'Reunião de equipe (final)'
     ];
     
     return momentOrder.filter(moment => itemsByMoment[moment]);
